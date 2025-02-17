@@ -39,7 +39,8 @@ function NumberAttribute() {
       {info && (
         <div>
           <p>Value: {info.value}</p>
-          <p>Is Prime: {info.isPrime ? 'Yes' : 'No'}</p>
+          <p>Is Prime: {info.isPrime}</p>
+          <p>Is Odd: {info.isOdd.toString()}</p>
           <p>Square Root: {info.squareRoot}</p>
         </div>
       )}
