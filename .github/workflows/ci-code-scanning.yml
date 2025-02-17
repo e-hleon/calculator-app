@@ -1,0 +1,67 @@
+name: CI, Tests and Code Scanning
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-test-snyk:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Checkout del repositorio
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      # 2. Configuración de Node.js
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      # 3. Instala dependencias y ejecuta tests del backend
+      - name: Install & Test Backend
+        run: |
+          cd backend
+          npm install
+          npm test
+
+      # 4. Instala dependencias y ejecuta tests del frontend
+      - name: Install & Test Frontend
+        run: |
+          cd frontend
+          npm install
+          npm test
+
+      # 5. Ejecuta Snyk para el backend y genera SARIF
+      - name: Snyk Test Backend
+        uses: snyk/actions/node@master
+        with:
+          command: test
+          args: '--file=backend/package.json --sarif-file-output=backend.sarif'
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        continue-on-error: true
+
+      # 6. Ejecuta Snyk para el frontend y genera SARIF
+      - name: Snyk Test Frontend
+        uses: snyk/actions/node@master
+        with:
+          command: test
+          args: '--file=frontend/package.json --sarif-file-output=frontend.sarif'
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        continue-on-error: true
+
+      # 7. Sube el archivo SARIF del backend a GitHub Code Scanning
+      - name: Upload SARIF for Backend Scan
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: backend.sarif
+
+      # 8. Sube el archivo SARIF del frontend a GitHub Code Scanning
+      - name: Upload SARIF for Frontend Scan
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: frontend.sarif
