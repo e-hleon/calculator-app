@@ -14,8 +14,11 @@ app.get('/api/calc/:operation', calculatorController.handleOperation);
 // Rutas para atributo de número
 app.get('/api/numberAttribute/:num', numberAttributeController.getNumberAttributes);
 
-app.listen(port, () => {
-  console.log(`Backend listening on port ${port}`);
-});
+// Solo iniciar el servidor si este módulo es el principal
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`Backend listening on port ${port}`);
+  });
+}
 
-module.exports = app; // Exportamos para poder hacer testing
+module.exports = app; // Exportamos para que los tests puedan usar la app sin reiniciar el servidor
