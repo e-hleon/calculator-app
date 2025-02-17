@@ -10,58 +10,42 @@ jobs:
   build-test-snyk:
     runs-on: ubuntu-latest
     steps:
-      # 1. Checkout del repositorio
+      # 1. Descarga el repositorio
       - name: Check out repository
         uses: actions/checkout@v3
 
-      # 2. Configuración de Node.js
+      # 2. Configura Node.js
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
           node-version: 16
 
-      # 3. Instala dependencias y ejecuta tests del backend
+      # 3. Instala dependencias y ejecuta los tests del backend
       - name: Install & Test Backend
         run: |
           cd backend
           npm install
           npm test
 
-      # 4. Instala dependencias y ejecuta tests del frontend
+      # 4. Instala dependencias y ejecuta los tests del frontend
       - name: Install & Test Frontend
         run: |
           cd frontend
           npm install
           npm test
 
-      # 5. Ejecuta Snyk para el backend y genera SARIF
-      - name: Snyk Test Backend
+      # 5. Ejecuta Snyk en modo SARIF para todos los proyectos (backend y frontend)
+      - name: Run Snyk scan for SARIF output
         uses: snyk/actions/node@master
         with:
           command: test
-          args: '--file=backend/package.json --sarif-file-output=backend.sarif'
+          args: '--sarif-file-output=snyk.sarif --all-projects'
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        continue-on-error: true
+        continue-on-error: true  # Para asegurarnos de que se suba el archivo SARIF aun si Snyk detecta vulnerabilidades
 
-      # 6. Ejecuta Snyk para el frontend y genera SARIF
-      - name: Snyk Test Frontend
-        uses: snyk/actions/node@master
-        with:
-          command: test
-          args: '--file=frontend/package.json --sarif-file-output=frontend.sarif'
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        continue-on-error: true
-
-      # 7. Sube el archivo SARIF del backend a GitHub Code Scanning
-      - name: Upload SARIF for Backend Scan
+      # 6. Sube el archivo SARIF a GitHub Code Scanning
+      - name: Upload SARIF results to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: backend.sarif
-
-      # 8. Sube el archivo SARIF del frontend a GitHub Code Scanning
-      - name: Upload SARIF for Frontend Scan
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: frontend.sarif
+          sarif_file: snyk.sarif
