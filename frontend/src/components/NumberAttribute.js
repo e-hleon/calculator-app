@@ -40,7 +40,7 @@ function NumberAttribute() {
         <div>
           <p>Value: {info.value}</p>
           <p>Is Prime: {info.isPrime}</p>
-          <p>Is Odd: {info.isOdd}</p>
+          <p>Is Odd: {String(info.isOdd)}</p>
           <p>Square Root: {info.squareRoot}</p>
         </div>
       )}
