@@ -9,7 +9,7 @@ describe('Number Attribute Controller', () => {
 
     expect(response.status).toBe(200);
     expect(response.body.value).toBe(9);
-    expect(response.body.isPrime).toBe(false);
+    expect(response.body.isPrime).toBe("No");
     expect(response.body.squareRoot).toBe(3);
   });
 
@@ -19,7 +19,7 @@ describe('Number Attribute Controller', () => {
 
     expect(response.status).toBe(200);
     expect(response.body.value).toBe(2);
-    expect(response.body.isPrime).toBe(true);
+    expect(response.body.isPrime).toBe("Yes");
     // sqrt(2) es aprox 1.414..., para simplificar comparamos con toBeCloseTo
     expect(response.body.squareRoot).toBeCloseTo(1.414, 3);
   });
