@@ -12,6 +12,10 @@ exports.handleOperation = (req, res) => {
   const numA = parseFloat(a);
   const numB = parseFloat(b);
 
+  if (isNaN(numA) || isNaN(numB)) {
+    return res.status(400).json({ error: 'Invalid numeric values provided' });
+  }
+  
   let result;
 
   switch (operation) {
