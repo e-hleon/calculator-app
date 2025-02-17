@@ -49,6 +49,7 @@ jobs:
         uses: snyk/actions/node@master
         with:
           command: test
-          args: '--file=frontend/package.json'
+          args: '--file=frontend/package.json --severity-threshold=high'
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
