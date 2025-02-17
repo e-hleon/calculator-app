@@ -8,6 +8,7 @@ function Calculator() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setResult('');
     try {
       const response = await fetch(
         `http://localhost:3001/api/calc/${operation}?a=${a}&b=${b}`
