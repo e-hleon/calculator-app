@@ -9,3 +9,5 @@
 ## Config
 
 Asegúrate de que el backend corra en localhost:3001 o ajusta la URL en Calculator.js y NumberAttribute.js
+
+Al hacer un commit activamos CI
